@@ -1,0 +1,62 @@
+from pico2d import *
+
+import game_framework
+import main_state
+import title_state
+
+from character import character
+
+import school
+
+name = "main_state"
+
+player = None
+grass = None
+font = None
+
+class Grass:
+    def __init__(self):
+        self.background = load_image('resource/map.png')
+
+    def draw(self):
+        self.background.draw(400,300)
+def enter():
+   global player,grass
+   player = character()
+   grass = Grass()
+def exit():
+    global player,grass
+    del(player)
+    del(grass)
+
+def pause():
+    pass
+
+def resume():
+    pass
+
+def handle_events():
+   events = get_events()
+   global player
+   for event in events:
+        if event.type == SDL_QUIT:
+            game_framework.quit()
+        elif event.type == SDL_KEYDOWN  and event.key == SDLK_ESCAPE:
+            game_framework.change_state(main_state)
+        elif event.type == SDL_KEYDOWN  and event.key == SDLK_1:
+            game_framework.change_state(school)
+        else :
+            player.handle_event(event)
+
+def update():
+    global  mop1
+    player.update()
+    # mop.update()
+
+    delay(0.05)
+def draw():
+    global  mop1
+    clear_canvas()
+    grass.draw()
+    player.draw()
+    update_canvas()
