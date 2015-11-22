@@ -1,0 +1,97 @@
+import random
+from pico2d import *
+
+__author__ = 'user'
+
+class character:
+   image = None
+   hpbar = None
+   frameSize =4
+   jump = True
+   gravity = -30
+   jumpMove = 0
+   UP,DOWN,LEFT_IDLE,LEFT_RUN,RIGHT_IDLE,RIGHT_RUN =5,4,3,2,1,0
+
+
+
+
+
+   def __init__(self):
+
+        self.x, self.y = 50,300
+        self.frame = random.randint(0, 1)
+        self.state = self.RIGHT_IDLE
+        self.gravity = 10
+        self.missilex = self.x
+       # self.image = load_image("resource/rs_%d.png"%self.frame)
+
+
+   def handle_event(self, event):
+        global mis
+        if(event.type, event.key) == (SDL_KEYDOWN, SDLK_LEFT):
+            if self.state in (self.RIGHT_IDLE,self.LEFT_RUN,self.RIGHT_RUN,self.LEFT_IDLE):
+                self.state = self.LEFT_RUN
+                self.frame = 0
+                self.frameSize = 4
+        elif(event.type, event.key) == (SDL_KEYDOWN,SDLK_RIGHT):
+            if self.state in (self.RIGHT_IDLE,self.LEFT_RUN,self.LEFT_IDLE):
+                self.state = self.RIGHT_RUN
+                self.frameSize = 4
+
+        elif(event.type, event.key) == (SDL_KEYDOWN,SDLK_UP):
+           if self.state in (self.RIGHT_IDLE,self.LEFT_RUN,self.RIGHT_RUN,self.LEFT_IDLE):
+                self.state = self.UP
+        elif(event.type, event.key) == (SDL_KEYDOWN,SDLK_DOWN):
+            if self.state in (self.RIGHT_IDLE,self.LEFT_RUN,self.RIGHT_RUN,self.LEFT_IDLE):
+                 self.state = self.DOWN
+
+        elif(event.type, event.key) == (SDL_KEYUP, SDLK_LEFT):
+            if self.state in (self.LEFT_RUN,self.RIGHT_RUN):
+                self.state = self.LEFT_IDLE
+        elif(event.type, event.key) == (SDL_KEYUP, SDLK_RIGHT):
+            if self.state in (self.LEFT_RUN,self.RIGHT_RUN):
+                self.state = self.RIGHT_IDLE
+
+
+        elif(event.type, event.key) == (SDL_KEYUP, SDLK_UP):
+            if self.state in (self.LEFT_RUN,self.RIGHT_RUN,self.UP):
+                self.state = self.RIGHT_IDLE
+        elif(event.type, event.key) == (SDL_KEYUP, SDLK_DOWN):
+            if self.state in (self.LEFT_RUN,self.RIGHT_RUN,self.DOWN):
+                self.state = self.RIGHT_IDLE
+
+
+
+
+
+   def update(self):
+
+       self.frame = (self.frame+1) % self.frameSize
+
+
+
+       if self.state == self.RIGHT_RUN:
+             self.frameSize = 3
+             self.x = min(800,self.x+5)
+       elif self.state == self.LEFT_RUN:
+              self.frameSize = 3
+              self.x = max(0,self.x-5)
+       elif self.state == self.RIGHT_IDLE:
+              self.frameSize = 4
+       elif self.state == self.UP:
+              self.y = self.y+5
+       elif self.state == self.DOWN:
+              self.y = self.y-5
+
+        # АјАн
+       if self.state == self.RIGHT_IDLE:
+             character.image = load_image("resource/rs_%d.png"%self.frame)
+       elif self.state == self.LEFT_IDLE:
+             character.image = load_image("resource/s_%d.png"%self.frame)
+       elif self.state == self.RIGHT_RUN:
+              character.image = load_image("resource/rw_%d.png"%self.frame)
+       elif self.state == self.LEFT_RUN:
+             character.image = load_image("resource/w_%d.png"%self.frame)
+
+   def draw(self):
+    self.image.draw(self.x,self.y)
